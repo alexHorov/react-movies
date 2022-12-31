@@ -2,7 +2,7 @@ import React from "react";
 
 class Search extends React.Component {
   state = {
-    search: "",
+    search: "matrix",
     type: "all",
 
   };
@@ -13,7 +13,9 @@ class Search extends React.Component {
   };
 
   handleFilter = (event) => {
-    this.setState(()=>({ type: event.target.dataset.type }), ()=>{
+    this.setState(
+        ()=>({ type: event.target.dataset.type }), 
+        ()=>{
         this.props.searchMovies(this.state.search, this.state.type)
     });
     
