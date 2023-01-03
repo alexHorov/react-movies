@@ -1,27 +1,27 @@
-import React from "react";
+import React, {useState}from "react";
 
-class Search extends React.Component {
-  state = {
-    search: "matrix",
-    type: "all",
+const Search =(props)=> {
+  const {
+    searchMovies = Function.prototype,
+  }= props;
 
-  };
-  handleKey = (event) => {
+  const [search, setSeacrh]= useState('');
+  const [type, setType]= useState('all');
+ 
+
+
+  const handleKey = (event) => {
     if (event.key === "Enter") {
-        this.props.searchMovies(this.state.search, this.state.type)
+        searchMovies(search, type)
     }
   };
 
-  handleFilter = (event) => {
-    this.setState(
-        ()=>({ type: event.target.dataset.type }), 
-        ()=>{
-        this.props.searchMovies(this.state.search, this.state.type)
-    });
+  const handleFilter = (event) => {
+    setType(event.target.dataset.type);
+    searchMovies(search, event.target.dataset.type);
     
   };
 
-  render() {
     return (
       <div className="row">
         <div className="col s12">
@@ -30,15 +30,15 @@ class Search extends React.Component {
               placeholder="search"
               type="search"
               className="validate"
-              value={this.state.search}
+              value={search}
               onChange={(event) =>
-                this.setState({ search: event.target.value })
+                setSeacrh(event.target.value)
               }
-              onKeyDown={this.handleKey}
+              onKeyDown={handleKey}
             />
             <button
               className="btn saarch-btn"
-              onClick={() => this.props.searchMovies(this.state.search, this.state.type)}
+              onClick={() => searchMovies(search, type)}
             >
               Search
             </button>
@@ -49,9 +49,9 @@ class Search extends React.Component {
                 className="with-gap"
                 name="type"
                 type="radio"
-                checked={this.state.type === 'all'}
+                checked={type === 'all'}
                 data-type="all"
-                onChange={this.handleFilter}
+                onChange={handleFilter}
               />
               <span>All</span>
             </label>
@@ -60,9 +60,9 @@ class Search extends React.Component {
                 className="with-gap"
                 name="type"
                 type="radio"
-                checked={this.state.type === 'movie'}
+                checked={type === 'movie'}
                 data-type="movie"
-                onChange={this.handleFilter}
+                onChange={handleFilter}
               />
               <span>Movies only</span>
             </label>
@@ -71,9 +71,9 @@ class Search extends React.Component {
                 className="with-gap"
                 name="type"
                 type="radio"
-                checked={this.state.type === 'series'}
+                checked={type === 'series'}
                 data-type="series"
-                onChange={this.handleFilter}
+                onChange={handleFilter}
               />
               <span>Series only</span>
             </label>
@@ -82,9 +82,9 @@ class Search extends React.Component {
                 className="with-gap"
                 name="type"
                 type="radio"
-                checked={this.state.type === 'game'}
+                checked={type === 'game'}
                 data-type="game"
-                onChange={this.handleFilter}
+                onChange={handleFilter}
               />
               <span>Game only</span>
             </label>
@@ -93,6 +93,6 @@ class Search extends React.Component {
       </div>
     );
   }
-}
+
 
 export { Search };

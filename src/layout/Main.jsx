@@ -1,52 +1,51 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { MoviesList } from "../components/MovieList";
 import { Search } from "../components/Search";
 import { Preloader } from "../components/Preloader";
 
-const API_KEY = process.env.REACT_APP_API_KEY
+const API_KEY = process.env.REACT_APP_API_KEY;
 
+function Main() {
+  const [movies, setMovies] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-class Main extends React.Component {
-    state={
-        movies:[],
-        loading: true,
-    }
+  const searchMovies = (str, type = "all") => {
+    setLoading(true);
+    fetch(
+      `https://www.omdbapi.com/?apikey=${API_KEY}&s=${str}${
+        type !== "all" ? `&type=${type}` : ""
+      }`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        setMovies(data.Search);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoading(false);
+      });
+  };
 
-    componentDidMount(){
-    console.log(process.env)
-        fetch(`https://www.omdbapi.com/?apikey=${API_KEY}&s=matrix`)
-        .then(response=> response.json())
-        .then(data=>this.setState({movies: data.Search, loading: false}))
-        .catch((err)=>{
-            console.log(err)
-            this.setState({loading: false})
-        })
-    }
+  useEffect(() => {
+    fetch(`https://www.omdbapi.com/?apikey=${API_KEY}&s=matrix`)
+      .then((response) => response.json())
+      .then((data) => {
+        setMovies(data.Search);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoading(false);
+      });
+  }, []);
 
-    searchMovies = (str, type= "all")=>{
-        this.setState({loading: true})
-        fetch(`https://www.omdbapi.com/?apikey=${API_KEY}&s=${str}${type !=="all" ? `&type=${type}`: ""}`)
-        .then(response=> response.json())
-        .then(data=>this.setState({movies: data.Search, loading: false}))
-        .catch((err)=>{
-            console.log(err)
-            this.setState({loading: false})
-        })
-    }
-
-    render() {
-        const {movies, loading}=this.state;
-        return <main className="container content">
-            <Search searchMovies={this.searchMovies}/>
-            {loading ?  (
-                <Preloader/>
-                ):(
-                <MoviesList movies={movies}/>
-                )}
-
-         
-        </main>
-    }
+  return (
+    <main className="container content">
+      <Search searchMovies={searchMovies} />
+      {loading ? <Preloader /> : <MoviesList movies={movies} />}
+    </main>
+  );
 }
 
-export { Main }
+export { Main };
